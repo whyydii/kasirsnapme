@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SnapMe Studio Kasir</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>SnapMe Studio Kasir</h1>
+
+        <h2>Katalog Paket Studio</h2>
+        <div id="catalog" class="catalog-list"></div>
+
+        <h2>Add-on Cetak Foto</h2>
+        <div id="addons" class="addons-list"></div>
+
+        <h2>Add-on Minuman</h2>
+        <div id="minuman" class="minuman-list"></div>
+
+        <h2>Add-on Snack</h2>
+        <div id="snack" class="snack-list"></div>
+
+        <div class="total-section">
+            Total: Rp <span id="totalPrice">0</span>
+        </div>
+
+        <button id="generateReceipt">Buat Nota</button>
+
+        <pre id="receipt" style="display:none;"></pre>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
