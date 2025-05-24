@@ -1,10 +1,41 @@
-// Data katalog dan addons
-const catalogItems = [ /* sama seperti sebelumnya */ ];
-const addonItems = [ /* sama seperti sebelumnya */ ];
-const minumanItems = [ /* sama seperti sebelumnya */ ];
-const snackItems = [ /* sama seperti sebelumnya */ ];
+const catalogItems = [
+    { id: 'basic', name: 'Studio Basic', price: 50000 },
+    { id: 'basicTirai', name: 'Basic Tirai', price: 60000 },
+    { id: 'spotLight', name: 'Spot Light', price: 50000 },
+    { id: 'mrtStudio', name: 'MRT Studio', price: 50000 },
+    { id: 'photoBox', name: 'Photobox', price: 60000 },
+];
 
-// Referensi element
+const addonItems = [
+    { id: 'A', name: 'Cetak Foto Tipe A', price: 10000 },
+    { id: 'B', name: 'Cetak Foto Tipe B', price: 15000 },
+    { id: 'C', name: 'Cetak Foto Tipe C', price: 10000 },
+    { id: 'D', name: 'Cetak Foto Tipe D', price: 15000 },
+];
+
+const minumanItems = [
+    { id: 'aqua', name: 'Aqua', price: 4000 },
+    { id: 'pucukHarum', name: 'Pucuk Harum', price: 5000 },
+    { id: 'frutea', name: 'Frutea', price: 5000 },
+    { id: 'floridina', name: 'Floridina', price: 4000 },
+    { id: 'cocaCola', name: 'Coca Cola', price: 5000 },
+    { id: 'sprite', name: 'Sprite', price: 5000 },
+    { id: 'susuUltra', name: 'Susu Ultra', price: 5000 },
+    { id: 'milku', name: 'Milku', price: 5000 },
+    { id: 'pocari', name: 'Pocari', price: 8000 },
+    { id: 'goodday', name: 'Goodday', price: 8000 },
+    { id: 'golda', name: 'Golda', price: 5000 },
+    { id: 'chimory', name: 'Chimory', price: 8000 },
+    { id: 'tehKotak', name: 'Teh Kotak', price: 5000 },
+];
+
+const snackItems = [
+    { id: 'chitato', name: 'Chitato', price: 2500 },
+    { id: 'chikiBall', name: 'Chiki Ball', price: 2500 },
+    { id: 'bengBeng', name: 'Beng Beng', price: 2500 },
+    { id: 'tanggo', name: 'Tanggo', price: 2500 },
+];
+
 const containerCatalog = document.getElementById('catalog');
 const containerAddon = document.getElementById('addons');
 const containerMinuman = document.getElementById('minuman');
@@ -13,12 +44,10 @@ const totalPriceEl = document.getElementById('totalPrice');
 const receiptEl = document.getElementById('receipt');
 const btnGenerateReceipt = document.getElementById('generateReceipt');
 
-// Format angka
 function formatRupiah(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// Membuat input item jumlah
 function createItemInput(item, container) {
     const label = document.createElement('label');
     label.htmlFor = item.id;
@@ -46,13 +75,11 @@ function createItemInput(item, container) {
     container.appendChild(label);
 }
 
-// Render produk
 catalogItems.forEach(i => createItemInput(i, containerCatalog));
 addonItems.forEach(i => createItemInput(i, containerAddon));
 minumanItems.forEach(i => createItemInput(i, containerMinuman));
 snackItems.forEach(i => createItemInput(i, containerSnack));
 
-// Hitung total
 function updateTotal() {
     const inputs = document.querySelectorAll('input[name="item"]');
     let total = 0;
@@ -64,7 +91,6 @@ function updateTotal() {
     totalPriceEl.textContent = formatRupiah(total);
 }
 
-// Event listener
 document.body.addEventListener('input', e => {
     if (e.target.name === 'item') {
         updateTotal();
@@ -72,7 +98,6 @@ document.body.addEventListener('input', e => {
     }
 });
 
-// Generate teks nota
 function generateReceiptText() {
     const inputs = document.querySelectorAll('input[name="item"]');
     const allItems = [...catalogItems, ...addonItems, ...minumanItems, ...snackItems];
@@ -102,7 +127,6 @@ function generateReceiptText() {
     return text;
 }
 
-// Generate PDF
 btnGenerateReceipt.addEventListener('click', () => {
     const receiptText = generateReceiptText();
     if (receiptText === null) return;
@@ -117,5 +141,4 @@ btnGenerateReceipt.addEventListener('click', () => {
     doc.save(`nota-snapme-${Date.now()}.pdf`);
 });
 
-// Inisialisasi
 updateTotal();
