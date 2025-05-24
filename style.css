@@ -172,6 +172,9 @@ button:hover {
     gap: 0px;
     margin: 70px 0;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 100px; /* agar tidak mentok ke bawah di HP */
 }
 .tools button {
     background-color: #27ae60;
@@ -185,6 +188,7 @@ button:hover {
 }
 .tools button:hover {
     background-color: #1e8449;
+
 }
 
 #historyContainer {
