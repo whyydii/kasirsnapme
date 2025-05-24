@@ -134,7 +134,7 @@ function generateReceiptText(name) {
 
     text += '\n----------------------------\n';
     text += `TOTAL:\tRp ${formatRupiah(total)}\n\n`;
-    text += 'Terima kasih telah menggunakan layanan SnapMe Studio!';
+    text += 'Snap Me Self Photo, Where moments come alive';
     return text;
 }
 
