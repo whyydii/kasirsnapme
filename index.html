@@ -23,35 +23,39 @@
         <h2>Add-on Snack</h2>
         <div id="snack" class="snack-list"></div>
 
-        <!-- Input Nama Customer -->
         <div class="input-group">
             <label for="customerName">Nama Customer:</label>
-            <input type="text" id="customerName" placeholder="Nama lengkap..." style="padding: 8px; border-radius: 9px; border: 1px solid #ccc; font-size: 1rem;">
+            <input type="text" id="customerName" placeholder="Nama lengkap...">
         </div>
 
         <div class="total-section">
             Total: Rp <span id="totalPrice">0</span>
         </div>
+
         <div class="input-group">
             <label for="paymentMethod">Metode Pembayaran:</label>
             <select id="paymentMethod">
-            <option value="">Pilih metode</option>
-            <option value="Cash">Cash</option>
-            <option value="Transfer">Transfer</option>
+                <option value="">Pilih metode</option>
+                <option value="Cash">Cash</option>
+                <option value="Transfer">Transfer</option>
             </select>
         </div>
+
         <button id="generateReceipt">Buat Nota</button>
 
         <pre id="receipt" style="display:none;"></pre>
+
+        <!-- Tombol hijau dipindahkan ke sini -->
+        <div class="tools">
+            <button onclick="showTransactionHistory()">Lihat Riwayat Penjualan</button>
+            <button onclick="exportToCSV()">Ekspor ke CSV</button>
+            <button onclick="clearTransactions()">Hapus Semua Data</button>
+            <div id="historyContainer"></div>
+        </div>
     </div>
 
-    <div class="tools">
-        <button onclick="showTransactionHistory()">Lihat Riwayat Penjualan</button>
-        <button onclick="exportToCSV()">Ekspor ke CSV</button>
-        <button onclick="clearTransactions()">Hapus Semua Data</button>
-    </div>
-
-<div id="historyContainer"></div>
+    <!-- Tempat untuk riwayat (boleh tetap di luar container jika perlu layar penuh) -->
+    
 
     <script src="script.js"></script>
 </body>
