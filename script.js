@@ -1,7 +1,6 @@
 // ====================
 // Data Item
 // ====================
-
 const catalogItems = [
     { id: 'basic', name: 'Studio Basic', price: 50000 },
     { id: 'basicTirai', name: 'Basic Tirai', price: 60000 },
@@ -43,7 +42,6 @@ const snackItems = [
 // ====================
 // Referensi Elemen HTML
 // ====================
-
 const containerCatalog = document.getElementById('catalog');
 const containerAddon = document.getElementById('addons');
 const containerMinuman = document.getElementById('minuman');
@@ -52,17 +50,15 @@ const totalPriceEl = document.getElementById('totalPrice');
 const receiptEl = document.getElementById('receipt');
 const btnGenerateReceipt = document.getElementById('generateReceipt');
 const inputCustomerName = document.getElementById('customerName');
+const selectPaymentMethod = document.getElementById('paymentMethod');
 
 // ====================
 // Fungsi Utilitas
 // ====================
-
-// Format angka ke Rupiah
 function formatRupiah(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// Ambil tanggal saat ini dalam format Indonesia
 function getCurrentDate() {
     return new Date().toLocaleDateString("id-ID", {
         year: 'numeric',
@@ -71,7 +67,6 @@ function getCurrentDate() {
     });
 }
 
-// Buat input jumlah item
 function createItemInput(item, container) {
     const label = document.createElement('label');
     const nameSpan = document.createElement('span');
@@ -97,7 +92,6 @@ function createItemInput(item, container) {
     container.appendChild(label);
 }
 
-// Tampilkan semua item ke halaman
 function renderAllItems() {
     catalogItems.forEach(item => createItemInput(item, containerCatalog));
     addonItems.forEach(item => createItemInput(item, containerAddon));
@@ -105,7 +99,6 @@ function renderAllItems() {
     snackItems.forEach(item => createItemInput(item, containerSnack));
 }
 
-// Hitung dan tampilkan total harga
 function updateTotal() {
     const inputs = document.querySelectorAll('input[name="item"]');
     let total = 0;
@@ -121,14 +114,15 @@ function updateTotal() {
     totalPriceEl.textContent = formatRupiah(total);
 }
 
-// Buat isi nota dalam bentuk teks rapi
-function generateReceiptText(name) {
+// ========== Nota Text ========== //
+function generateReceiptText(name, method) {
     const inputs = document.querySelectorAll('input[name="item"]');
     const allItems = [...catalogItems, ...addonItems, ...minumanItems, ...snackItems];
 
     let text = '=== Nota Pembayaran SnapMe Studio ===\n\n';
-    text += `Nama Customer: ${name}\n`;
-    text += `Tanggal: ${getCurrentDate()}\n\n`;
+    text += `Nama Customer : ${name}\n`;
+    text += `Metode Bayar  : ${method}\n`;
+    text += `Tanggal       : ${getCurrentDate()}\n\n`;
 
     let total = 0;
     let adaItem = false;
@@ -158,11 +152,76 @@ function generateReceiptText(name) {
     return text;
 }
 
+// ========== Local Storage Transaksi ========== //
+function saveTransaction(data) {
+    let transactions = JSON.parse(localStorage.getItem('salesData')) || [];
+    transactions.push(data);
+    localStorage.setItem('salesData', JSON.stringify(transactions));
+}
+
+function getAllTransactions() {
+    return JSON.parse(localStorage.getItem('salesData')) || [];
+}
+
+function clearTransactions() {
+    localStorage.removeItem('salesData');
+}
+
+function exportToCSV() {
+    const transactions = getAllTransactions();
+    if (transactions.length === 0) return alert('Tidak ada data untuk diekspor.');
+
+    let csv = 'Nama Customer,Tanggal,Pembayaran,Item,Qty,Harga,Subtotal,Total\n';
+
+    transactions.forEach(tr => {
+        tr.items.forEach(item => {
+            csv += `${tr.customer},${tr.date},${tr.method},${item.name},${item.qty},${item.price},${item.subTotal},${tr.total}\n`;
+        });
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'penjualan_snapme.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function showTransactionHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    const transactions = getAllTransactions();
+    historyContainer.innerHTML = '';
+
+    if (transactions.length === 0) {
+        historyContainer.innerHTML = '<p>Tidak ada transaksi tersimpan.</p>';
+        return;
+    }
+
+    let totalSemua = 0;
+    transactions.forEach((tr, index) => {
+        let html = `<div class="history-card">
+            <h4>Transaksi #${index + 1}</h4>
+            <p><strong>Nama:</strong> ${tr.customer}</p>
+            <p><strong>Tanggal:</strong> ${tr.date}</p>
+            <p><strong>Pembayaran:</strong> ${tr.method}</p>
+            <ul>`;
+
+        tr.items.forEach(item => {
+            html += `<li>${item.name} x ${item.qty} = Rp ${formatRupiah(item.subTotal)}</li>`;
+        });
+
+        html += `</ul><p><strong>Total:</strong> Rp ${formatRupiah(tr.total)}</p></div>`;
+        totalSemua += tr.total;
+        historyContainer.innerHTML += html;
+    });
+
+    historyContainer.innerHTML += `<div class="total-box">TOTAL PEMASUKAN: Rp ${formatRupiah(totalSemua)}</div>`;
+}
+
 // ====================
 // Event Listener
 // ====================
-
-// Update total saat jumlah berubah
 document.body.addEventListener('input', e => {
     if (e.target.name === 'item') {
         updateTotal();
@@ -170,26 +229,52 @@ document.body.addEventListener('input', e => {
     }
 });
 
-// Buat nota saat tombol diklik
 btnGenerateReceipt.addEventListener('click', () => {
     const name = inputCustomerName.value.trim();
+    const method = selectPaymentMethod.value;
 
-    if (name === '') {
+    if (!name) {
         alert('Silakan masukkan nama customer terlebih dahulu.');
         return;
     }
 
-    const receiptText = generateReceiptText(name);
+    if (!method) {
+        alert('Silakan pilih metode pembayaran terlebih dahulu.');
+        return;
+    }
 
-    if (!receiptText) {
+    const inputs = document.querySelectorAll('input[name="item"]');
+    const items = [];
+    let total = 0;
+
+    inputs.forEach(input => {
+        const qty = parseInt(input.value);
+        if (qty > 0) {
+            const price = parseInt(input.dataset.price);
+            const itemName = [...catalogItems, ...addonItems, ...minumanItems, ...snackItems].find(i => i.id === input.id).name;
+            const subTotal = qty * price;
+            items.push({ id: input.id, name: itemName, qty, price, subTotal });
+            total += subTotal;
+        }
+    });
+
+    if (items.length === 0) {
         alert('Mohon pilih minimal satu item untuk membuat nota.');
         return;
     }
 
+    const receiptText = generateReceiptText(name, method);
     receiptEl.textContent = receiptText;
     receiptEl.style.display = 'block';
 
-    // Buat PDF dari teks nota
+    saveTransaction({
+        customer: name,
+        method,
+        date: getCurrentDate(),
+        total,
+        items
+    });
+
     const jsPDF = window.jspdf.jsPDF;
     const doc = new jsPDF();
     doc.setFont("courier", "normal");
@@ -201,6 +286,5 @@ btnGenerateReceipt.addEventListener('click', () => {
 // ====================
 // Inisialisasi
 // ====================
-
 renderAllItems();
 updateTotal();
