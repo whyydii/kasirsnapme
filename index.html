@@ -24,19 +24,34 @@
         <div id="snack" class="snack-list"></div>
 
         <!-- Input Nama Customer -->
-        <div style="margin-top: 30px; text-align: right;">
-            <label for="customerName" style="font-weight: bold; color: #34495e;">Nama Customer:</label>
-            <input type="text" id="customerName" placeholder="Nama lengkap..." style="padding: 8px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem;">
+        <div class="input-group">
+            <label for="customerName">Nama Customer:</label>
+            <input type="text" id="customerName" placeholder="Nama lengkap..." style="padding: 8px; border-radius: 9px; border: 1px solid #ccc; font-size: 1rem;">
         </div>
 
         <div class="total-section">
             Total: Rp <span id="totalPrice">0</span>
         </div>
-
+        <div class="input-group">
+            <label for="paymentMethod">Metode Pembayaran:</label>
+            <select id="paymentMethod">
+            <option value="">Pilih metode</option>
+            <option value="Cash">Cash</option>
+            <option value="Transfer">Transfer</option>
+            </select>
+        </div>
         <button id="generateReceipt">Buat Nota</button>
 
         <pre id="receipt" style="display:none;"></pre>
     </div>
+
+    <div class="tools">
+        <button onclick="showTransactionHistory()">Lihat Riwayat Penjualan</button>
+        <button onclick="exportToCSV()">Ekspor ke CSV</button>
+        <button onclick="clearTransactions()">Hapus Semua Data</button>
+    </div>
+
+<div id="historyContainer"></div>
 
     <script src="script.js"></script>
 </body>
