@@ -1,3 +1,7 @@
+// ====================
+// Data Item
+// ====================
+
 const catalogItems = [
     { id: 'basic', name: 'Studio Basic', price: 50000 },
     { id: 'basicTirai', name: 'Basic Tirai', price: 60000 },
@@ -36,7 +40,10 @@ const snackItems = [
     { id: 'tanggo', name: 'Tanggo', price: 2500 },
 ];
 
-// Referensi elemen
+// ====================
+// Referensi Elemen HTML
+// ====================
+
 const containerCatalog = document.getElementById('catalog');
 const containerAddon = document.getElementById('addons');
 const containerMinuman = document.getElementById('minuman');
@@ -46,21 +53,25 @@ const receiptEl = document.getElementById('receipt');
 const btnGenerateReceipt = document.getElementById('generateReceipt');
 const inputCustomerName = document.getElementById('customerName');
 
-// Format angka
+// ====================
+// Fungsi Utilitas
+// ====================
+
+// Format angka ke Rupiah
 function formatRupiah(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// Ambil tanggal saat ini
+// Ambil tanggal saat ini dalam format Indonesia
 function getCurrentDate() {
     return new Date().toLocaleDateString("id-ID", {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
     });
 }
 
-// Buat input jumlah
+// Buat input jumlah item
 function createItemInput(item, container) {
     const label = document.createElement('label');
     const nameSpan = document.createElement('span');
@@ -86,7 +97,7 @@ function createItemInput(item, container) {
     container.appendChild(label);
 }
 
-// Render item ke tampilan
+// Tampilkan semua item ke halaman
 function renderAllItems() {
     catalogItems.forEach(item => createItemInput(item, containerCatalog));
     addonItems.forEach(item => createItemInput(item, containerAddon));
@@ -94,10 +105,11 @@ function renderAllItems() {
     snackItems.forEach(item => createItemInput(item, containerSnack));
 }
 
-// Hitung total harga
+// Hitung dan tampilkan total harga
 function updateTotal() {
     const inputs = document.querySelectorAll('input[name="item"]');
     let total = 0;
+
     inputs.forEach(input => {
         const qty = parseInt(input.value);
         const price = parseInt(input.dataset.price);
@@ -105,13 +117,15 @@ function updateTotal() {
             total += qty * price;
         }
     });
+
     totalPriceEl.textContent = formatRupiah(total);
 }
 
-// Generate isi nota
+// Buat isi nota dalam bentuk teks rapi
 function generateReceiptText(name) {
     const inputs = document.querySelectorAll('input[name="item"]');
     const allItems = [...catalogItems, ...addonItems, ...minumanItems, ...snackItems];
+
     let text = '=== Nota Pembayaran SnapMe Studio ===\n\n';
     text += `Nama Customer: ${name}\n`;
     text += `Tanggal: ${getCurrentDate()}\n\n`;
@@ -119,12 +133,17 @@ function generateReceiptText(name) {
     let total = 0;
     let adaItem = false;
 
+    text += 'Item                          Total\n';
+    text += '-'.repeat(42) + '\n';
+
     inputs.forEach(input => {
         const qty = parseInt(input.value);
         if (qty > 0) {
             const item = allItems.find(i => i.id === input.id);
             const subTotal = qty * item.price;
-            text += `${item.name} x ${qty}:\tRp ${formatRupiah(subTotal)}\n`;
+            const namaItem = `${item.name} x ${qty}`.padEnd(30);
+            const hargaItem = `Rp ${formatRupiah(subTotal)}`.padStart(10);
+            text += `${namaItem}${hargaItem}\n`;
             total += subTotal;
             adaItem = true;
         }
@@ -132,13 +151,18 @@ function generateReceiptText(name) {
 
     if (!adaItem) return null;
 
-    text += '\n----------------------------\n';
-    text += `TOTAL:\tRp ${formatRupiah(total)}\n\n`;
+    text += '-'.repeat(42) + '\n';
+    text += `TOTAL`.padEnd(30) + `Rp ${formatRupiah(total)}\n\n`;
     text += 'Snap Me Self Photo, Where moments come alive';
+
     return text;
 }
 
-// Event: input jumlah
+// ====================
+// Event Listener
+// ====================
+
+// Update total saat jumlah berubah
 document.body.addEventListener('input', e => {
     if (e.target.name === 'item') {
         updateTotal();
@@ -146,15 +170,17 @@ document.body.addEventListener('input', e => {
     }
 });
 
-// Event: klik tombol buat nota
+// Buat nota saat tombol diklik
 btnGenerateReceipt.addEventListener('click', () => {
     const name = inputCustomerName.value.trim();
+
     if (name === '') {
         alert('Silakan masukkan nama customer terlebih dahulu.');
         return;
     }
 
     const receiptText = generateReceiptText(name);
+
     if (!receiptText) {
         alert('Mohon pilih minimal satu item untuk membuat nota.');
         return;
@@ -163,7 +189,7 @@ btnGenerateReceipt.addEventListener('click', () => {
     receiptEl.textContent = receiptText;
     receiptEl.style.display = 'block';
 
-    // Generate PDF
+    // Buat PDF dari teks nota
     const jsPDF = window.jspdf.jsPDF;
     const doc = new jsPDF();
     doc.setFont("courier", "normal");
@@ -172,6 +198,9 @@ btnGenerateReceipt.addEventListener('click', () => {
     doc.save(`nota-snapme-${Date.now()}.pdf`);
 });
 
-// Inisialisasi awal
+// ====================
+// Inisialisasi
+// ====================
+
 renderAllItems();
 updateTotal();
