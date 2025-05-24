@@ -53,7 +53,7 @@ h2 {
     gap: 20px;
 }
 
-/* Styling label for items */
+/* Styling label for input item */
 label {
     background: #f7f9fc;
     padding: 18px 20px;
@@ -87,6 +87,7 @@ label > span {
     margin-left: 10px;
 }
 
+/* Input jumlah */
 .qty-input {
     width: 60px;
     font-size: 1rem;
@@ -95,6 +96,30 @@ label > span {
     border: 1px solid #ccc;
     text-align: center;
     margin-left: 10px;
+    
+    
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 30px;
+    gap: 12px;
+}
+
+.input-group label {
+    font-weight: 600;
+    color: #34495e;
+    font-size: 1rem;
+}
+
+.input-group input[type="text"] {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    min-width: 240px;
 }
 
 /* Total price section */
@@ -107,6 +132,7 @@ label > span {
     text-shadow: 0 1px 2px #b0c4de;
 }
 
+/* Tombol */
 button {
     background: #2980b9;
     color: white;
@@ -126,6 +152,7 @@ button:hover {
     box-shadow: 0 10px 25px rgba(27, 79, 114, 0.9);
 }
 
+/* Nota */
 #receipt {
     background: #e9f2fd;
     border-radius: 16px;
@@ -140,6 +167,46 @@ button:hover {
     user-select: text;
 }
 
+.tools {
+    display: flex;
+    gap: 0px;
+    margin: 70px 0;
+    flex-wrap: wrap;
+}
+.tools button {
+    background-color: #27ae60;
+    padding: 10px 10px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.tools button:hover {
+    background-color: #1e8449;
+}
+
+#historyContainer {
+    margin-top: 30px;
+}
+.history-card {
+    background: #457784;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+.history-card h4 {
+    margin-bottom: 8px;
+}
+.total-box {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 25px;
+    text-align: right;
+}
 /* Responsive tweaks */
 @media (max-width: 600px) {
     body {
