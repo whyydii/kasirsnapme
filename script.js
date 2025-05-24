@@ -288,3 +288,4 @@ btnGenerateReceipt.addEventListener('click', () => {
 // ====================
 renderAllItems();
 updateTotal();
+
